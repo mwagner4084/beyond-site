@@ -1,0 +1,126 @@
+// Color variables
+$th-color-brown: #9B8A80;
+$th-color-white: #FFFFFF;
+$th-color-black: #000000;
+$th-color-green: #8FA093;
+$th-color-eggshell: #EDD3C4;
+$th-color-light-gray: #D9D9D9;
+$th-color-blue-gray: #abbdc9;
+$th-color-lavender: #63477a;
+$th-color-beige: #D8CCC4;
+$th-color-cream: #FAF6F5;
+$bs-link-color: #708D77;
+$th-color-olive: #8FA093;
+$th-color-forest: #22311d;
+
+// Typography variables
+$heading-font-family: 'Cormorant SC', sans-serif;
+$heading-font-weight: 600;
+$subheading-font-family: 'Cormorant SC', sans-serif;
+$subheading-font-weight: 400;
+$navbar-font-family: 'Lustria', sans-serif;
+$quote-font-family: 'Lustria', sans-serif;
+$body-font-family: 'Cormorant SC', sans-serif;
+$body-font-weight: 400;
+
+// Border variables
+$card-border-width: 3px;
+
+// Map variables to CSS custom properties for compatibility
+:root {
+  --th-color-brown: #{$th-color-brown};
+  --th-color-white: #{$th-color-white};
+  --th-color-black: #{$th-color-black};
+  --th-color-green: #{$th-color-green};
+  --th-color-eggshell: #{$th-color-eggshell};
+  --th-color-light-gray: #{$th-color-light-gray};
+  --th-color-blue-gray: #{$th-color-blue-gray};
+  --th-color-lavender: #{$th-color-lavender};
+  --th-color-beige: #{$th-color-beige};
+  --th-color-cream: #{$th-color-cream};
+  --bs-link-color: #{$bs-link-color};
+  --th-color-olive: #{$th-color-olive};
+  --th-color-forest: #{$th-color-forest};
+
+  --heading-font-family: #{$heading-font-family};
+  --heading-font-weight: #{$heading-font-weight};
+  --subheading-font-family: #{$subheading-font-family};
+  --subheading-font-weight: #{$subheading-font-weight};
+  --navbar-font-family: #{$navbar-font-family};
+  --quote-font-family: #{$quote-font-family};
+  --bs-body-font-family: #{$body-font-family};
+  --bs-body-font-weight: #{$body-font-weight};
+
+  --bs-card-border-width: #{$card-border-width};
+}
+
+// Responsive font size mixins
+@mixin responsive-font($min-size, $max-size, $min-vw: 320px, $max-vw: 1200px) {
+  font-size: $min-size;
+  
+  @media (min-width: $min-vw) {
+    font-size: calc(#{$min-size} + #{strip-unit($max-size - $min-size)} * ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)}));
+  }
+  
+  @media (min-width: $max-vw) {
+    font-size: $max-size;
+  }
+}
+
+// Font face definitions
+@mixin font-face($font-family, $font-style, $font-weight, $font-file) {
+  @font-face {
+    font-family: $font-family;
+    font-style: $font-style;
+    font-weight: $font-weight;
+    src: url($font-file) format('truetype');
+    font-display: swap;
+  }
+}
+
+// Define media breakpoints
+$breakpoint-xs: 0;
+$breakpoint-sm: 500px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 900px;
+$breakpoint-xl: 1200px;
+
+// Helper function to strip units
+@function strip-unit($value) {
+  @return $value / ($value * 0 + 1);
+}
+
+// Button styles mixin
+@mixin styled-button {
+  font-family: $body-font-family;
+  align-items: center;
+  background-color: $th-color-green;
+  border: 2px solid $th-color-forest;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: $th-color-white;
+  cursor: pointer;
+  display: flex;
+  font-size: 15px;
+  height: 48px;
+  justify-content: center;
+  line-height: 24px;
+  max-width: 100%;
+  padding: 0 25px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  
+  // Responsive padding
+  @media (min-width: $breakpoint-md) {
+    padding: 0 40px;
+  }
+}
+
+// Card styles mixin
+@mixin card-shadow {
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.2);
+}

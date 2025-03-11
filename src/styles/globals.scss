@@ -1,0 +1,604 @@
+@import "variables";
+@import "~bootstrap/scss/bootstrap";
+
+// Font imports
+@include font-face('Lustria', 'Regular', 400, '/fonts/Lustria-Regular.ttf');
+@include font-face('Cormorant Garamond', 'Bold', 700, '/fonts/CormorantGaramond-Bold.ttf');
+@include font-face('Cormorant Garamond', 'normal', 500, '/fonts/CormorantGaramond-SemiBold.ttf');
+@include font-face('Cormorant SC', 'Normal', 500, '/fonts/CormorantSC-SemiBold.ttf');
+@include font-face('Cormorant SC', 'Bold', 700, '/fonts/CormorantSC-Bold.ttf');
+@include font-face('WindSong', 'normal', 500, '/fonts/WindSong-Medium.ttf');
+
+// Reset
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $body-font-family;
+  font-weight: $body-font-weight;
+  background-color: $th-color-cream;
+}
+
+// Base styling
+.site-main {
+  min-height: 90vh;
+  background-color: $th-color-cream;
+}
+
+.container {
+  max-width: 1000px;
+}
+
+// Typography
+h1 {
+  font-family: $heading-font-family;
+  font-weight: $heading-font-weight;
+  text-align: center;
+  letter-spacing: 3px;
+  line-height: 1;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(1.3rem + 1vh);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(1.5rem + 0.25vh);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(2rem + 0.25vh);
+  }
+}
+
+h2 {
+  font-family: $heading-font-family;
+  font-weight: $heading-font-weight;
+  text-align: center;
+  letter-spacing: 3px;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(1rem + 0vh);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(1.3rem + 0vh);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1.3rem + 0vh);
+  }
+}
+
+h3 {
+  font-family: $subheading-font-family;
+  font-weight: $subheading-font-weight;
+  text-align: center;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.8rem + 0.5vh);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(1.4rem + 0.25vh);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1.4rem + 0.25vh);
+  }
+}
+
+.h4 {
+  font-family: $subheading-font-family;
+  font-weight: $subheading-font-weight;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.7rem + 0.5vh);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(0.8rem + 0.5vh);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1rem + 0.25vh);
+  }
+}
+
+.h5 {
+  font-family: $subheading-font-family;
+  font-weight: bold;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(1rem + 1vh);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(1.3rem + 0.5vh);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1.3rem + 1vh);
+  }
+}
+
+p {
+  font-family: $body-font-family;
+  font-weight: $body-font-weight;
+  text-align: justify;
+  line-height: 1.3;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.7rem + 0.25vw);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(0.6rem + 0.5vw);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1rem + 0.25vw);
+  }
+}
+
+// Header Styles
+.site-header {
+  background: $th-color-beige;
+  position: relative;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  nav {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    
+    @media screen and (max-width: $breakpoint-lg) {
+      display: none;
+    }
+  }
+}
+
+header {
+  font-family: $heading-font-family;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: $th-color-beige;
+  
+  a {
+    text-decoration: none;
+    color: $th-color-black;
+    font-size: calc(0.75rem + 0.25vw);
+    justify-content: center;
+  }
+  
+  ul {
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 0;
+    
+    a {
+      list-style: none;
+      height: 100%;
+      display: flex;
+      text-decoration: none;
+      color: $th-color-black;
+      font-size: calc(0.75rem + 0.5vw);
+      text-align: center;
+    }
+    
+    li {
+      &:hover {
+        transform: scale(1.1);
+        transition: all 0.3s ease-in-out;
+      }
+      
+      a {
+        padding: 10px;
+        color: $th-color-black;
+      }
+    }
+  }
+  
+  nav {
+    @media only screen and (min-width: $breakpoint-lg) {
+      display: flex;
+    }
+  }
+}
+
+// Logo Styling
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.navbar-logo-overlay {
+  margin: auto;
+  width: 100%;
+  max-width: 200px;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    height: 40px;
+  }
+}
+
+// Navigation
+.nav-ul {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  padding-left: 0;
+}
+
+// Mobile Menu
+#menu-icon {
+  display: none;
+  font-size: 2rem;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10001;
+  
+  @media screen and (max-width: $breakpoint-lg) {
+    display: block;
+  }
+}
+
+// Fullscreen Overlay Menu
+.overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-size: calc(1rem + 1vh);
+  background-color: $th-color-forest;
+  overflow-x: hidden;
+  transition: all 0.5s ease-in-out;
+  text-align: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  
+  &.active {
+    width: 100%;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  a {
+    padding: 15px;
+    text-decoration: none;
+    font-size: 2rem;
+    color: $th-color-white;
+    display: block;
+    transition: 0.3s;
+    font-size: calc(1rem + 1vh);
+    
+    &:hover {
+      color: #83B692;
+    }
+    
+    @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.overlay-content {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 3rem;
+  color: $th-color-white;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+// Card Styles
+.card {
+  @include card-shadow;
+}
+
+.card-dark {
+  background-color: $th-color-forest;
+  color: $th-color-white;
+  font-family: $heading-font-family;
+  font-weight: $heading-font-weight;
+  text-align: center;
+}
+
+.card-text {
+  font-family: $body-font-family;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.6rem + 1vw);
+    text-align: left;
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(0.6rem + 0.75vw);
+    text-align: center;
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1rem + 0.25vw);
+    text-align: center;
+  }
+}
+
+.card-footer {
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.75rem + 0.4vh);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(1rem + 0.5vh);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1rem + 0.5vh);
+  }
+}
+
+.card-body {
+  @media screen and (max-width: $breakpoint-sm) {
+    text-align: justify;
+    margin: 0;
+  }
+}
+
+.border-dark {
+  border-width: $card-border-width;
+  border-color: $th-color-forest;
+}
+
+// Custom components
+.rental-text {
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.6rem + 0vw);
+    text-align: center;
+    font-family: $body-font-family;
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(0.8rem + 0.25vw);
+    text-align: center;
+    font-family: $body-font-family;
+  }
+}
+
+.pkg-title {
+  color: $th-color-black;
+  font-family: $heading-font-family;
+  font-weight: $heading-font-weight;
+  text-align: left;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.7rem + 0vw);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(0.7rem + 0.5vw);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1rem + 0.25vw);
+  }
+}
+
+.link {
+  color: $bs-link-color;
+  font-weight: 700;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.75rem + 0.5vw);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(1rem + 1vw);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(1rem + 0.5vw);
+    margin: auto;
+  }
+}
+
+.doc-img {
+  width: 100%;
+  height: auto;
+  margin: auto;
+  
+  @media screen and (max-width: $breakpoint-sm) {
+    max-width: 200px;
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    max-width: 500px;
+    position: relative;
+    bottom: 0;
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    max-width: 500px;
+    display: flex;
+    align-items: flex-end;
+  }
+}
+
+.ul-pkg {
+  @media screen and (max-width: $breakpoint-sm) {
+    font-size: calc(0.5rem + 0.5vw);
+  }
+  
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-lg) {
+    font-size: calc(0.5rem + 0.75vw);
+  }
+  
+  @media only screen and (min-width: $breakpoint-lg) {
+    font-size: calc(0.75rem + 0.5vw);
+  }
+}
+
+.text-beige {
+  color: $th-color-brown;
+  font-weight: bold;
+}
+
+.home-img {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  margin: auto;
+}
+
+.decor-card {
+  background-color: $th-color-cream;
+  color: $th-color-black;
+  font-family: $body-font-family;
+  font-weight: $body-font-weight;
+  text-align: center;
+}
+
+// Button Styles
+.button-56 {
+  @include styled-button;
+  
+  &:after {
+    background-color: $th-color-forest;
+    border-radius: 8px;
+    content: "";
+    display: block;
+    height: 48px;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    top: -2px;
+    transform: translate(8px, 8px);
+    transition: transform .2s ease-out;
+    z-index: -1;
+  }
+  
+  &:hover {
+    outline: 0;
+    background-color: $th-color-forest;
+    color: $th-color-white;
+    
+    &:after {
+      transform: translate(0, 0);
+    }
+  }
+  
+  &:active {
+    background-color: #ffdeda;
+    outline: 0;
+  }
+}
+
+// Footer
+footer {
+  display: in-line;
+  background-color: $th-color-beige;
+  color: $th-color-black;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: calc(0.75rem + 0.25vw);
+  justify-content: center;
+  padding-top: 3rem;
+  font-family: $navbar-font-family;
+  font-weight: $heading-font-weight;
+}
+
+// Blockquote
+blockquote {
+  font-family: $quote-font-family;
+  font-style: italic;
+  border-left: 5px solid $th-color-olive;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  line-height: 170%;
+  quotes: "\201C""\201D";
+  
+  &:before {
+    color: $th-color-olive;
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+  }
+  
+  p {
+    display: inline;
+  }
+}
+
+// Animation classes
+.slide-in-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+// Keyframes
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-1000px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(1000px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Links
+a {
+  &:hover {
+    text-decoration: underline;
+    color: $th-color-forest;
+    font-weight: 600;
+  }
+}
