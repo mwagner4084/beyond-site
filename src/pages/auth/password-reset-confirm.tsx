@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout/Layout';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import Link from 'next/link';
 
 export default function PasswordResetConfirmPage() {
@@ -13,30 +14,45 @@ export default function PasswordResetConfirmPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [tokenValid, setTokenValid] = useState<boolean | null>(null);
+  const [isValidToken, setIsValidToken] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(true);
 
-  // Validate token on component mount
+  // Verify token when component loads and router is ready
   useEffect(() => {
-    const validateToken = async () => {
-      if (!token || !uid) return;
-
-      try {
-        const response = await fetch('/api/auth/verify-reset-token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token, uid }),
-        });
-
-        setTokenValid(response.ok);
-      } catch (err) {
-        setTokenValid(false);
+    const verifyToken = async () => {
+      if (router.isReady && token && uid) {
+        try {
+          setIsVerifying(true);
+          const response = await axios.post('/api/auth/verify-reset-token', {
+            token: token,
+            uid: uid
+          });
+          
+          if (response.data.success) {
+            setIsValidToken(true);
+          } else {
+            setIsValidToken(false);
+            setError('Invalid or expired password reset link.');
+          }
+        } catch (err) {
+          setIsValidToken(false);
+          if (axios.isAxiosError(err) && err.response) {
+            setError(err.response.data.message || 'Invalid or expired password reset link.');
+          } else {
+            setError('Invalid or expired password reset link.');
+          }
+        } finally {
+          setIsVerifying(false);
+        }
+      } else if (router.isReady) {
+        setIsValidToken(false);
+        setError('Invalid password reset link. Missing parameters.');
+        setIsVerifying(false);
       }
     };
-
-    if (token && uid) {
-      validateToken();
-    }
-  }, [token, uid]);
+    
+    verifyToken();
+  }, [router.isReady, token, uid, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,79 +64,62 @@ export default function PasswordResetConfirmPage() {
     setIsSubmitting(true);
     setError('');
 
-    // Validate passwords match
+    // Validate passwords
     if (formData.newPassword !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Passwords do not match.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (formData.newPassword.length < 8) {
+      setError('Password must be at least 8 characters long.');
       setIsSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch('/api/auth/password-reset-confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          uid,
-          token,
-          newPassword: formData.newPassword,
-        }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Password reset failed');
+      // Make sure token and uid are strings
+      const resetToken = Array.isArray(token) ? token[0] : token;
+      const userId = Array.isArray(uid) ? uid[0] : uid;
+      
+      if (!resetToken || !userId) {
+        throw new Error('Reset token or user ID is missing');
       }
-
-      // Redirect to success page
-      router.push('/auth/password-reset-complete');
-    } catch (err: any) {
-      setError(err.message || 'An error occurred. Please try again.');
+      
+      const response = await axios.post('/api/auth/password-reset-confirm', {
+        token: resetToken,
+        uid: userId,
+        newPassword: formData.newPassword
+      });
+      
+      if (response.data.success) {
+        router.push('/auth/password-reset-complete');
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data.message || 'Failed to reset password');
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to reset password. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Loading state
-  if (tokenValid === null && (token && uid)) {
+  if (isVerifying) {
     return (
       <Layout
-        title="Reset Password - Beyond Events"
-        description="Reset your password for the Beyond Events client portal."
-      >
-        <div className="container text-center py-5">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-3">Validating your reset link...</p>
-        </div>
-      </Layout>
-    );
-  }
-
-  // Invalid token
-  if (tokenValid === false) {
-    return (
-      <Layout
-        title="Invalid Reset Link - Beyond Events"
-        description="The password reset link is invalid or has expired."
+        title="Verifying Reset Link - Beyond Events"
+        description="Verifying your password reset link."
       >
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-12 col-md-8 col-lg-6">
-              <div className="card border-dark my-5">
-                <div className="card-body text-center">
-                  <h2 className="display-6 text-center my-3">
-                    Invalid Reset Link
-                  </h2>
-                  <p className="text-center">
-                    The password reset link is invalid or has expired. Please request a new password reset link.
-                  </p>
-                  <div className="mt-4">
-                    <Link href="/auth/password-reset" className="btn btn-primary">
-                      Request New Reset Link
-                    </Link>
-                  </div>
-                </div>
+            <div className="col-12 col-md-8 col-lg-6 text-center">
+              <div className="my-5">
+                <h1 className="display-6 mb-4">Verifying Reset Link</h1>
+                <p>Please wait while we verify your password reset link...</p>
               </div>
             </div>
           </div>
@@ -129,30 +128,23 @@ export default function PasswordResetConfirmPage() {
     );
   }
 
-  // Missing token or uid
-  if (!token || !uid) {
+  if (!isValidToken) {
     return (
       <Layout
         title="Invalid Reset Link - Beyond Events"
-        description="The password reset link is incomplete."
+        description="Invalid password reset link."
       >
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-12 col-md-8 col-lg-6">
-              <div className="card border-dark my-5">
-                <div className="card-body text-center">
-                  <h2 className="display-6 text-center my-3">
-                    Invalid Reset Link
-                  </h2>
-                  <p className="text-center">
-                    The password reset link is incomplete. Please make sure you've clicked the entire link from your email.
-                  </p>
-                  <div className="mt-4">
-                    <Link href="/auth/password-reset" className="btn btn-primary">
-                      Request New Reset Link
-                    </Link>
-                  </div>
+            <div className="col-12 col-md-8 col-lg-6 text-center">
+              <div className="my-5">
+                <h1 className="display-6 mb-4">Invalid Reset Link</h1>
+                <div className="alert alert-danger" role="alert">
+                  {error}
                 </div>
+                <Link href="/auth/password-reset" className="btn btn-primary mt-3">
+                  Try Again
+                </Link>
               </div>
             </div>
           </div>
@@ -161,26 +153,25 @@ export default function PasswordResetConfirmPage() {
     );
   }
 
-  // Valid token - show reset form
   return (
     <Layout
       title="Reset Password - Beyond Events"
-      description="Create a new password for your account."
+      description="Set a new password for your account."
     >
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-md-8 col-lg-6">
-            <h2 className="display-6 text-center my-3">
-              Reset Your Password
-            </h2>
-            
-            {error && (
-              <div className="alert alert-danger" role="alert">
-                {error}
-              </div>
-            )}
-            
             <form onSubmit={handleSubmit} className="my-4">
+              <h1 className="display-6 my-3 text-center">
+                Set New Password
+              </h1>
+              
+              {error && (
+                <div className="alert alert-danger" role="alert">
+                  {error}
+                </div>
+              )}
+              
               <div className="mb-3">
                 <label htmlFor="newPassword" className="form-label">New Password</label>
                 <input
@@ -190,13 +181,9 @@ export default function PasswordResetConfirmPage() {
                   name="newPassword"
                   value={formData.newPassword}
                   onChange={handleChange}
-                  placeholder="Enter your new password"
-                  minLength={8}
+                  placeholder="At least 8 characters"
                   required
                 />
-                <div className="form-text">
-                  Password must be at least 8 characters long
-                </div>
               </div>
               
               <div className="mb-3">
@@ -208,14 +195,12 @@ export default function PasswordResetConfirmPage() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Confirm your new password"
-                  minLength={8}
                   required
                 />
               </div>
               
               <button 
-                className="btn btn-primary w-100" 
+                className="w-100 btn btn-lg btn-primary" 
                 type="submit"
                 disabled={isSubmitting}
               >

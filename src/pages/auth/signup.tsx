@@ -26,18 +26,29 @@ export default function SignupPage() {
     setIsSubmitting(true);
     setError('');
 
-    // Validate passwords match
+    // Password validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Passwords do not match.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long.');
       setIsSubmitting(false);
       return;
     }
 
     try {
-      await signup(formData.email, formData.password, formData.name);
+      await signup(formData.name, formData.email, formData.password);
       router.push('/client'); // Redirect to client dashboard on success
-    } catch (err: any) {
-      setError(err.message || 'Failed to create account. Please try again.');
+    } catch (err: unknown) {
+      // Fixed error handling for unknown type
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to create account. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -45,15 +56,15 @@ export default function SignupPage() {
 
   return (
     <Layout
-      title="Sign Up - Beyond Events"
-      description="Create a new account for the Beyond Events client portal."
+      title="Create Account - Beyond Events"
+      description="Create a new account to access the client portal."
     >
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-md-8 col-lg-6">
             <form onSubmit={handleSubmit} className="my-4">
               <h1 className="display-6 my-3 text-center">
-                Client Portal Sign Up
+                Create Client Account
               </h1>
               
               {error && (
@@ -99,13 +110,9 @@ export default function SignupPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Create a password"
-                  minLength={8}
+                  placeholder="Choose a password (8+ characters)"
                   required
                 />
-                <div className="form-text">
-                  Password must be at least 8 characters long
-                </div>
               </div>
               
               <div className="mb-3">
@@ -118,7 +125,6 @@ export default function SignupPage() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="Confirm your password"
-                  minLength={8}
                   required
                 />
               </div>
@@ -129,7 +135,7 @@ export default function SignupPage() {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Creating Account...' : 'Sign Up'}
+                {isSubmitting ? 'Creating Account...' : 'Create Account'}
               </button>
             </form>
             

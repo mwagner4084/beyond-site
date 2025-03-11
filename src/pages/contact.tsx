@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Layout from '@/components/Layout/Layout';
 import { useRouter } from 'next/router';
 import ContactForm from '@/components/Forms/ContactForm';
+import { ContactFormData } from '@/components/Forms/ContactForm';
 
 export default function ContactPage() {
   const router = useRouter();
@@ -9,10 +10,10 @@ export default function ContactPage() {
   const [formError, setFormError] = useState('');
 
   // Form submission handler
-  const handleFormSubmit = async (formData: any) => {
+  const handleFormSubmit = async (formData: ContactFormData) => {
     setIsSubmitting(true);
     setFormError('');
-
+  
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -21,11 +22,11 @@ export default function ContactPage() {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to submit form. Please try again.');
       }
-
+  
       // Redirect to confirmation page on success
       router.push('/confirm');
     } catch (error) {

@@ -27,8 +27,13 @@ export default function LoginPage() {
     try {
       await login(formData.email, formData.password);
       router.push('/client'); // Redirect to client dashboard on success
-    } catch (err: any) {
-      setError(err.message || 'Failed to log in. Please check your credentials.');
+    } catch (err: unknown) {
+      // Fixed error handling for unknown type
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to log in. Please check your credentials.');
+      }
     } finally {
       setIsSubmitting(false);
     }
